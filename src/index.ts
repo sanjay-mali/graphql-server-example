@@ -1,11 +1,7 @@
 import express from "express";
-
 import { expressMiddleware } from "@apollo/server/express4";
 import cors from "cors";
-
-import { PrismaClient } from "@prisma/client";
 import apolloServer from "./graphql";
-
 
 async function startServer() {
   const app = express();

@@ -9,21 +9,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const server_1 = require("@apollo/server");
-const User_1 = require("./User");
-function apolloServer() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const server = new server_1.ApolloServer({
-            typeDefs: `
-      ${User_1.User.typeDefs}
-    `,
-            resolvers: {
-                Query: Object.assign({}, User_1.User.resolvers.queries),
-                Mutation: Object.assign({}, User_1.User.resolvers.mutations),
+exports.resolvers = void 0;
+const db_1 = require("../../lib/db");
+const queries = {
+    getUser: () => __awaiter(void 0, void 0, void 0, function* () {
+        const users = yield db_1.prisma.user.findMany();
+        return users;
+    }),
+};
+const mutations = {
+    createUser: (_1, _a) => __awaiter(void 0, [_1, _a], void 0, function* (_, { firstName, lastName, email, password, }) {
+        const newUser = yield db_1.prisma.user.create({
+            data: {
+                firstName,
+                lastName,
+                email,
+                password,
             },
         });
-        yield server.start();
-        return server;
-    });
-}
-exports.default = apolloServer;
+        return newUser;
+    }),
+};
+exports.resolvers = { queries, mutations };
