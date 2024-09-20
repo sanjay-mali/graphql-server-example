@@ -11,10 +11,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resolvers = void 0;
 const db_1 = require("../../lib/db");
+const service_user_1 = require("../../lib/service.user");
 const queries = {
-    getUser: () => __awaiter(void 0, void 0, void 0, function* () {
-        const users = yield db_1.prisma.user.findMany();
-        return users;
+    getUserToken: (_1, _a) => __awaiter(void 0, [_1, _a], void 0, function* (_, { email, password }) {
+        const token = yield (0, service_user_1.getUserToken)({ email, password });
+        return token;
+    }),
+    getCurrentUser: (_, __, context) => __awaiter(void 0, void 0, void 0, function* () {
+        if (context && context.user) {
+            const id = context.user.id;
+            const user = yield (0, service_user_1.getUserById)(id);
+            return user;
+        }
+        throw new Error("You are not authenticated");
     }),
 };
 const mutations = {

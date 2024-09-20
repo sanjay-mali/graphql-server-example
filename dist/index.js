@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const express4_1 = require("@apollo/server/express4");
 const cors_1 = __importDefault(require("cors"));
 const graphql_1 = __importDefault(require("./graphql"));
+const service_user_1 = require("./lib/service.user");
 function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         const app = (0, express_1.default)();
@@ -23,7 +24,22 @@ function startServer() {
         app.get("/", (req, res) => {
             res.json({ message: "Hello" });
         });
-        app.use("/graphql", (0, express4_1.expressMiddleware)(yield (0, graphql_1.default)()));
+        app.use("/graphql", (0, express4_1.expressMiddleware)(yield (0, graphql_1.default)(), {
+            context: (_a) => __awaiter(this, [_a], void 0, function* ({ req }) {
+                const token = req.headers["authorization"] || null;
+                if (!token) {
+                    return {};
+                }
+                try {
+                    const user = (0, service_user_1.decodeJwt)(token);
+                    return { user };
+                }
+                catch (error) {
+                    console.error("JWT Error:", error.message);
+                    return {};
+                }
+            }),
+        }));
         app.listen(8000, () => console.log("Server started on port 8000"));
     });
 }
