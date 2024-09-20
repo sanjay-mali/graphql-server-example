@@ -27,9 +27,7 @@ function getUserToken(payload) {
         const user = yield getUserByEmail(email);
         if (!user)
             throw new Error("user not found");
-        //   const userSalt = user.salt;
         const pwd = user.password;
-        //   const usersHashPassword = UserService.generateHash(userSalt, password);
         if (pwd !== user.password)
             throw new Error("Incorrect Password");
         // Gen Token
